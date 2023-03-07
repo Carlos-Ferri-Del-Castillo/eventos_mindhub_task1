@@ -67,38 +67,19 @@
       </ul>
     </div>
   </header>
-  <main class="container-fluid my-2">
-    <div class="d-flex flex-row mb-2 justify-content-between align-content-around flex-wrap">
-      <form class="p-2 mt-3">
-        <label class="form-check-label" for="flexCheckDefault">Cinema</label>
-        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-        <label class="form-check-label" for="flexCheckDefault">Costume Party</label>
-        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-        <label class="form-check-label" for="flexCheckDefault">Food Fair</label>
-        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-        <label class="form-check-label" for="flexCheckDefault">Marathon</label>
-        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-        <label class="form-check-label" for="flexCheckDefault">Museum Tour</label>
-        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-        <label class="form-check-label" for="flexCheckDefault">Music Concert</label>
-        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-      </form>
-      <div class="p-2">
-        <nav class="navbar">
-          <form class="d-flex" role="search">
-            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success" type="submit">Search</button>
-          </form>
-        </nav>
-      </div>
-    </div>
-    <section class="container_cards">
-      <div class="container-xxl">
-        <div class="d-flex flex-row mb-4 justify-content-around align-items-center align-content-around flex-wrap">
-          <div id="cards" class="container-fluid d-flex mt-3 justify-content-around flex-wrap">
-          </div>
+  <main class="main-index">
+    <section class="seccion1">
+      <form class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-evenly formulario-index">
+        <div class=" row container-fluid p-0 m-0 col-lg-8 justify-content-lg-evenly" id="checks">
         </div>
-      </div>
+        <div class="input-group px-5 px-lg-0 px-lg-5">
+          <input value="" type="text" class="form-control" placeholder="Search" aria-label="Username"
+            aria-describedby="addon-wrapping" id="busqueda-input">
+          <span class="input-group-text" id="addon-wrapping"><i class="fa-solid fa-magnifying-glass"></i></span>
+        </div>
+      </form>
+    </section>
+    <section id="seccion-cards" class="seccion2">
     </section>
   </main>
   <footer class="d-flex bg-body-tertiary">
