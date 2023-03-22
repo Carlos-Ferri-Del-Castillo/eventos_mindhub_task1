@@ -1,12 +1,34 @@
-const eventos = data.events
-const fechaActual = data.currentDate
-const eventosP = eventos_Pasados(eventos)
+fetch('https://mindhub-xj03.onrender.com/api/amazing')
+    .then(reponse => reponse.json())
+    .then(data => {
+        let eventos = data.events
+        let fecha = data.currentDate
+        const eventosP = ePasados(eventos, fecha)
+        cardsPast(eventosP, seccion_Past)
 
-function eventos_Pasados(los_eventos){
+        let todasLasCategorias = Array.from(new Set(categoriasFiltradas(eventosP)))
+        $check.innerHTML = generarCheckbox(todasLasCategorias)
+
+        $check.addEventListener('change', cruzarBusqueda)
+        $input.addEventListener('input', cruzarBusqueda)
+
+        function cruzarBusqueda() {
+            const filtroInput = busquedaInputText($input, eventosP)
+            const filtroCheck = busquedaCheck($input, filtroInput, eventosP)
+            if (filtroCheck.length === 0) {
+                return renderizar(mensajeNotFound(), 'section-pastEvents')
+            }
+            return renderizar(generarCards(filtroCheck), 'section-pastEvents')
+        }
+    })
+    .catch(error => console.log(error))
+
+
+function ePasados(even, fechaActual) {
     let past = []
-    
-    for(let evento of los_eventos){
-        if(evento.date < fechaActual){
+
+    for (let evento of even) {
+        if (evento.date < fechaActual) {
             past.push(evento)
         }
     }
@@ -15,22 +37,22 @@ function eventos_Pasados(los_eventos){
 
 const seccion_Past = document.getElementById('section-pastEvents')
 
-function cardsPast(list, place){
+function cardsPast(list, place) {
     let div = document.createElement('div');
     div.classList.add('row', 'row-cols-2', 'container-fluid', 'px-0', 'mx-auto', 'justify-content-center', 'justify-content-lg-evenly', 'gap-3', 'my-4')
-    for(let feature of list){
+    for (let feature of list) {
         div.innerHTML +=
-             `
+            `
              <div class="card g-3 mb-4" style="width: 18rem;">
              <img src="${feature.image}" class="card-img-top" alt="${feature.name}">
              <div class="card-body d-flex flex-column justify-content-center">
                  <h5 class="card-title">${feature.name}</h5>
                  <p class="card-text">${feature.description}</p>
-                 <p>${feature.date}</p>
+                 <p> Date: ${feature.date}</p>
+                 <p>Price: $${feature.price}</p>
                  <p>${feature.category}</p>
-                 <p>Price: ${feature.price}</p>
                  <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                 <a href="./details.html" class="btn btn-primary">See More</a>
+                 <a href="./details.html?id=${feature._id}" class="btn btn-primary">See More</a>
                    </div>
              </div>
              </div>
@@ -40,26 +62,23 @@ function cardsPast(list, place){
     place.append(div)
 }
 
-cardsPast(eventosP, seccion_Past)
-
 
 
 const $check = document.getElementById('checks-past')
 const $input = document.getElementById('busqueda-input-past')
 
-const todasLasCategorias = Array.from(new Set(categoriasFiltradas(eventosP)))
 
-function categoriasFiltradas(events){
+function categoriasFiltradas(events) {
     const categorias = events.map(event => event.category)
     return categorias
 }
 
-$check.innerHTML = generarCheckbox(todasLasCategorias)
 
-function generarCheckbox(categorias){
+
+function generarCheckbox(categorias) {
 
     let template = ''
-    categorias.forEach( categoria => {
+    categorias.forEach(categoria => {
         template += `
         <div class="form-check col-lg-auto col-6 p-lg-0 d-flex justify-content-center justify-content-lg-start">
             <input value="${categoria}" type="checkbox" name="category2" class="check-box form-check-input" id="${categoria}">
@@ -70,20 +89,19 @@ function generarCheckbox(categorias){
     return template
 }
 
-$check.addEventListener('change', cruzarBusqueda)
-$input.addEventListener('input', cruzarBusqueda)
 
-function obtenerCheckeados(){
-    const checkbox = document.querySelectorAll( 'input[type="checkbox"]:checked' )
+
+function obtenerCheckeados() {
+    const checkbox = document.querySelectorAll('input[type="checkbox"]:checked')
     const checkboxArray = Array.from(checkbox)
     return checkboxArray
 }
 
-function renderizar(template, donde){
+function renderizar(template, donde) {
     document.getElementById(donde).innerHTML = template
 }
 
-function generarCards(eventosP){
+function generarCards(eventosP) {
     let aux = ''
     let div = document.createElement('div')
     div.classList.add('row', 'row-cols-2', 'container-fluid', 'px-0', 'mx-auto', 'justify-content-center', 'justify-content-lg-evenly', 'gap-3', 'my-4')
@@ -111,41 +129,33 @@ function generarCards(eventosP){
     return template
 }
 
-function mensajeNotFound(){
+function mensajeNotFound() {
     template = ''
-    let div = document.createElement('h2')
+    let div = document.createElement('h3')
     template = `
-        <h2 class="not-found">Results Not Found</h2>
+        <h3 class="not-found">Results Not Found</h3>
     `
     div.innerHTML = template
     return template
 }
 
 
-function busquedaCheck(valueInput, listaEventos){
+function busquedaCheck(valueInput, listaEventos, todosLosEventos) {
     const checkeados = obtenerCheckeados()
     const checkValue = checkeados.map(checkeados => checkeados.value)
 
-    const eventosCheck = eventosP.filter(evento => checkValue.includes(evento.category))
+    const eventosCheck = todosLosEventos.filter(evento => checkValue.includes(evento.category))
 
-    if(eventosCheck.length > 0){
+    if (eventosCheck.length > 0) {
         const filtroCruzado = eventosCheck.filter(evento => evento.name.toLowerCase().startsWith(valueInput.value.toLowerCase()))
         return filtroCruzado
-    }else{
+    } else {
         return listaEventos
     }
 }
 
-function busquedaInputText(busquedaInput){
-    let inputFiltrado = eventosP.filter(evento => evento.name.toLowerCase().startsWith( busquedaInput.value.toLowerCase() ))
+function busquedaInputText(busquedaInput, todosLosEventos) {
+    let inputFiltrado = todosLosEventos.filter(evento => evento.name.toLowerCase().startsWith(busquedaInput.value.toLowerCase()))
     return inputFiltrado
 }
 
-function cruzarBusqueda(){
-    const filtroInput = busquedaInputText($input)
-    const filtroCheck = busquedaCheck($input,filtroInput)
-    if(filtroCheck.length === 0){
-        return renderizar(mensajeNotFound(), 'section-pastEvents')
-    }
-    return renderizar(generarCards(filtroCheck), 'section-pastEvents')
-}
